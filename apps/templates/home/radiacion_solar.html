@@ -1,0 +1,115 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Maps {% endblock title %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header bg-primary pb-6">
+      <div class="container-fluid">
+        <div class="header-body">
+          <div class="row align-items-center py-4">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page content -->
+    <div class="container-fluid mt--6">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="card bg-default">
+            <div class="card-header bg-transparent">
+              <div class="row align-items-center">
+                <div class="col">
+                  <h5 class="text-light text-uppercase ls-1 mb-1">Predicción de radiación solar en Colombia a partir de imágenes de satélite</h5><br>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card bg-default">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col">
+                  <form id="form" action="/procesar_imgs/" method="POST" onsubmit="return validateForm()">
+                    {% csrf_token %}
+                    <h3 class="mb-0">Ingresar el nombre del lugar, las coordenadas y el año</h3><br>
+                    <!-- <div class="row">
+                      <div class="col-md-4"><h3 class="mb-0">Latitud</h3></div>
+                      <div class="col-md-4"><h3 class="mb-0">Longitud</h3></div>
+                      <div class="col-md-4"><h3 class="mb-0">Año</h3></div>
+                    </div><br> -->
+                    <div class="row">
+                      <div class="col-md-3">
+                        <input type="text" class="form-control" id="nombre" placeholder="Nombre" name="nombre" value="Algún lugar">
+                      </div>
+                      <div class="col-md-3">
+                        <input type="text" class="form-control" id="latitud" placeholder="Latitud" name="latitud" value="-0.538432490745206">
+                      </div>
+                      <div class="col-md-3">
+                        <input type="text" class="form-control" id="longitud" placeholder="Longitud" name="longitud" value="-69.611519641749">
+                      </div>
+                      <div class="col-md-3">
+                        <select class="form-control" name="ann" id="ann" placeholder="Latitud">
+                          <option value=""></option>
+                          <option value="2012" selected>2012</option>
+                          <option value="2013">2013</option>
+                          <option value="2014">2014</option>
+                          <option value="2016">2016</option>
+                          <option value="2017">2017</option>
+                        </select>
+                      </div>
+                    </div><br>
+                    <input type="submit" id="btn_rproceso" class="btn btn-primary col-xl-12" value="Realizar proceso">
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include "includes/footer.html" %}
+      
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.36/dist/sweetalert2.all.min.js"></script>
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<script type="text/javascript">
+  function validateForm() {
+    try {
+      console.log(typeof(eval($('#latitud').val())));
+      console.log(typeof(eval($('#longitud').val())));
+    } catch (e) {
+      // console.error(e.name + ': ' + e.message);
+      Swal.fire({
+        icon: 'info',
+        text: 'Las coordenadas solo admiten valores numéricos',
+      });
+      return false;
+    }
+    if($('#nombre').val() == "" || $('#latitud').val() == "" || $('#longitud').val() == "" || $('#ann').val() == "") {
+      Swal.fire({
+          icon: 'info',
+          text: 'Por favor ingrese todos los datos',
+        });
+      return false;
+    }
+  }
+  
+  $(document).ready(function() {
+    
+  });
+</script>
+
+{% endblock javascripts %}

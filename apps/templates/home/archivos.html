@@ -1,0 +1,145 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Archivos {% endblock title %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header bg-primary pb-6">
+      <div class="container-fluid">
+        <div class="header-body">
+          <div class="row align-items-center py-4">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page content -->
+    <div class="container-fluid mt--6">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="card bg-default">
+            <div class="card-header bg-transparent">
+              <div class="row align-items-center">
+                <div class="col">
+                  <h5 class="text-light text-uppercase ls-1 mb-1">Archivos subidos</h5><br>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card bg-default">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col">           
+                  <table class="table table-striped table-sm table-responsive" id="main_table"> 
+                    <thead class="thead-light">
+                      <tr style="line-height: 5px">
+                        <th>ID.</th>            
+                        <th>ARCHIVO</th>
+                        <th>FECHA</th>
+                        <th>ACCIONES</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for fila in datos %}
+                        <tr>
+                          <td>{{ forloop.counter }}</td>
+                          <td>{{ fila.2 }}</td>
+                          <td>{{ fila.3 }}</td>
+                          <td>
+                            <a href="/abrir_archivo/{{ fila.0 }}/" class="a active" title="Abrir archivo">
+                              <i class="fa fa-folder-open text-blue"></i>
+                            </a>
+                            <a href="/descargar_archivo/{{ fila.0 }}/" target="_self" download="{{ fila.2 }}" title="Descargar archivo">
+                              <i class="fa fa-download text-blue"></i>
+                            </a>
+                            <a href="#" name="link" id="{{ fila.0 }}" class="a active" data-toggle="modal" data-target="#eliminar-archivo-modal" title="Eliminar archivo">
+                              <i class="fa fa-trash text-red"></i>
+                            </a>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+
+                  <div class="modal fade" id="eliminar-archivo-modal" tabindex="-1" role="dialog" aria-labelledby="eliminar-archivo-modal-label" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-tittle" id="eliminar-archivo-modal-header">¿Desea eliminar el archivo?</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">Eliminar un archivo es una acción que no se puede restaurar. ¿Está seguro?</div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                          <button type="button" class="btn btn-danger" id="eliminar-archivo-btn">Eliminar archivo</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include "includes/footer.html" %}
+      
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.36/dist/sweetalert2.all.min.js"></script>
+
+<!--Import jQuery before export.js-->
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+<!--Data Table-->
+<script type="text/javascript" src=" https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src=" https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
+
+<!--Export table buttons-->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.1/js/buttons.print.min.js"></script>
+
+<!--Export table button CSS-->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css">
+
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#main_table').DataTable({
+      language: {
+          "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json",
+      },
+      columnDefs: [{
+        targets: 0,
+        className: "dt-center"
+      }, {
+        targets: 3,
+        orderable: false,
+        className: "dt-center"
+      }]
+    });
+    $('.dataTables_length').addClass('bs-select');
+    idarc = 0
+    $("a[name=link]").click(function () {
+      idarc = $(this).prop('id')
+    });
+    $("#eliminar-archivo-btn").click(function () {
+      location.href = "/eliminar_archivo/"+idarc+"/";
+    });
+  });
+</script>
+
+{% endblock javascripts %}

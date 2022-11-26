@@ -1,0 +1,379 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Dashboard {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header bg-primary pb-6">
+      <div class="container-fluid">
+        <div class="header-body">
+          <div class="row align-items-center py-4">
+            <div class="col-lg-6 col-7">
+              <!-- <h6 class="h2 text-white d-inline-block mb-0">Default</h6>
+              <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                  <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                  <li class="breadcrumb-item"><a href="#">Dashboards</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Default</li>
+                </ol>
+              </nav> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page content -->
+    <form id="form" action="/subir_csv/" method="POST" enctype="multipart/form-data">
+      <div class="container-fluid mt--6">
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="card bg-default">
+              <div class="card-header bg-transparent">
+                <div class="row align-items-center">
+                  <div class="col" id="div_texto">
+                    <h5 class="text-light text-uppercase ls-1 mb-1">Cargar datos</h5>
+                    <input type="file" id="seleccionar" name="myFile" accept=".csv, .txt, .xls, .xlsx">
+                    <input type="submit" id="btn_subir" class="btn btn-sm btn-primary" value="Subir" disabled>
+                    {% csrf_token %}
+                    <!-- <label id="lbl_msg">{{ datos }}</label> -->
+                    <input type="hidden" name="usuario" value="{{ request.user.username }}">
+                    <!-- <input type="hidden" id="msg" value="{{ datos }}"> -->
+                    <!-- {% if datos != '' %}
+                      {{ datos }}
+                    {% endif %}   -->
+                    <!-- <input type="file" id="cdatos" accept=".csv, .txt, .xls, .xlsx" value="Cargar datos"> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-header border-0">
+                <div class="row align-items-center">
+                  <div class="col">
+                    <h3 class="mb-0">{{ nom_arch }}</h3><br>
+                    <table class="table table-striped table-sm table-responsive" id="main_table"> 
+                      <thead class="thead-light">
+                        <tr style="line-height: 5px">  
+                          <th>ID.</th>            
+                          {% for fila in columns %}
+                            <th scope="col">{{ fila }}</th>
+                          {% endfor %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for fila in datos %}
+                          <tr>
+                            <td>{{ forloop.counter }}</td>
+                            {% for celda in fila %}
+                              <td>{{ celda }}</td>
+                            {% endfor %}   
+                          </tr>
+                        {% endfor %}                        
+                      </tbody>
+                      <!-- <tfoot class="thead-light">
+                        <tr style="line-height: 5px">              
+                          {% for fila in columns %}
+                            <th scope="col">{{ fila }}</th>
+                          {% endfor %}
+                        </tr>
+                      </tfoot> -->
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% include "includes/footer.html" %}
+
+      </div>
+    </form>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+  <!--Import jQuery before export.js-->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+  <!--Data Table-->
+  <script type="text/javascript" src=" https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src=" https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
+
+  <!--Export table buttons-->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+  <!-- <script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.24/build/pdfmake.min.js"></script>
+  <script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.24/build/vfs_fonts.js"></script> -->
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.1/js/buttons.print.min.js"></script>
+
+  <!--Export table button CSS-->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css">
+
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+
+  <script type="text/javascript">
+    $('#main_table').DataTable({
+      language: {
+          "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json",
+      },
+      // dom: 'Bfrtip',
+      // buttons: [
+      //     {extend: 'copyHtml5', text: '<i class="fa fa-files-o"></i>', titleAttr: 'Copiar'},
+      //     {extend: 'excelHtml5', text: '<i class="fa fa-file-excel-o"></i>', titleAttr: 'Excel'},
+      //     {extend: 'csvHtml5', text: '<i class="fa fa-file-text-o"></i>', titleAttr: 'CSV'},
+      //     {extend: 'pdfHtml5', text: '<i class="fa fa-file-pdf-o"></i>', titleAttr: 'PDF'},
+      //     {extend: 'print', text: '<i class="fa fa-print"></i>', titleAttr: 'Imprimir'},
+      // ]
+      // buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],        
+      // initComplete: function() {
+      //   $('.buttons-copy').html('<i class="fa fa-copy" />')
+      //   $('.buttons-csv').html('<i class="fa fa-file-text-o" />')
+      //   $('.buttons-excel').html('<i class="fa fa fa-file-excel-o" />')
+      //   $('.buttons-pdf').html('<i class="fa fa-file-pdf-o" />')
+      //   $('.buttons-print').html('<i class="fa fa-print" />')
+      // }
+    });
+    $('.dataTables_length').addClass('bs-select');
+
+    $(document).ready(function() {
+      
+    });
+    // function val_archivo(msg) {
+    //   if(msg != '') {
+    //     alert(msg)
+    //     msg=''
+    //   }
+    // }
+
+    // $("#btn_subir").click(function(e) {
+    //   if($("#msg").val() == 'El archivo ya existe')
+    //     alert($("#msg").val())
+    // });
+
+    $("#seleccionar").change(function(e) {
+      if($('#seleccionar').val() != '')
+        $('#btn_subir').prop('disabled', false);
+    });
+
+    $("#seleccionar").click(function(e) {
+      $('#lbl_msg').html('')
+    });
+
+    function parseCSV(text) {
+      // Obtenemos las lineas del texto
+      let lines = text.replace(/\r/g, '').split('\n');
+      // console.log(lines[0]);
+      /*return lines.map(line => {
+        // Por cada linea obtenemos los valores
+        let values = line.split(',');
+        return values;
+      });*/
+      
+      return lines[0];
+    }
+
+    /*function reverseMatrix(matrix) {
+      let output = [];
+      // Por cada fila
+      matrix.forEach((values, row) => {
+        // Vemos los valores y su posicion
+        values.forEach((value, col) => {
+          // Si la posición aún no fue creada
+          if (output[col] === undefined) output[col] = [];
+          output[col][row] = value;
+        });
+      });
+      return output;
+    }*/
+
+    function crear_checkbox(i, nom) {
+      var cb = document.createElement("input");
+      cb.setAttribute("type", "checkbox");
+      cb.setAttribute("name", nom);
+      cb.setAttribute("value", nom);
+      cb.setAttribute("id", nom);
+      return cb;
+    }
+
+    function readFile(evt) {
+      let file = evt.target.files[0];
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        // Cuando el archivo se terminó de cargar
+        let lines = parseCSV(e.target.result);
+        //let output = reverseMatrix(lines);
+        // console.log(output);
+        // console.log(lines);
+
+        let cols = lines.split(';');
+        // for (i=0; i<cols.length; i++) {
+        //   //Add checkboxes
+        //   var checkbox = document.createElement('input');
+        //   checkbox.type = "checkbox";
+        //   checkbox.name = cols[i];
+        //   checkbox.value = cols[i];
+        //   checkbox.id = cols[i];
+
+        //   var label = document.createElement('label')
+        //   label.htmlFor = "id";
+        //   label.appendChild(document.createTextNode(cols[i]));
+
+        //   container.appendChild(checkbox);
+        //   container.appendChild(label);
+        //   // container.appendChild("<br>");
+        //   // container.innerHTML = "<br>";
+        // }      
+
+        // let myTable = "<table class='table align-items-center table-flush'>";
+        // myTable += "<thead class='thead-light'><tr><th scope='col' style='font-size:12px'>ID</th>";
+        // myTable += "<th scope='col' style='font-size:12px'>Nombre</th>";
+        // myTable += "<th scope='col' style='font-size:12px'>Cantidad</th>";
+        // myTable += "<th scope='col' style='font-size:12px'>Precio</th></tr></thead>";   
+        
+        // $("#table_responsive").html("");
+        // document.getElementById("table_responsive").innerHTML="";
+        var table = document.getElementById("main_table");
+        table.innerHTML = "";
+
+        for (let i = 0; i < cols.length / 2; i++) {
+
+          // Add checkboxes
+          // var checkbox = document.createElement('input');
+          // checkbox.type = "checkbox";
+          // checkbox.name = cols[i];
+          // checkbox.value = cols[i];
+          // checkbox.id = cols[i];
+
+          // var label = document.createElement('label')
+          // label.htmlFor = "id";
+          // label.appendChild(document.createTextNode(cols[i]));
+
+          // container.appendChild(checkbox);
+          // container.appendChild(label);
+          
+          var row = table.insertRow(-1);
+          var cell1 = row.insertCell(0);
+          var cell2 = row.insertCell(1);
+          var cell3 = row.insertCell(2);
+
+          // var cb = document.createElement("input");
+          // cb.setAttribute("type", "checkbox");
+          // cb.setAttribute("name", cols[i]);
+          // cb.setAttribute("value", cols[i]);
+          // cb.setAttribute("id", cols[i]);
+
+          var label = document.createElement('label')
+          label.setAttribute("htmlFor", "id");
+          // cell1.innerHTML = "a";
+
+          cell1.appendChild(crear_checkbox(i, cols[i]));
+          cell1.appendChild(document.createTextNode(" " + cols[i]));
+
+          if (cols.length / 2 < cols.length) {
+            if (cols.length % 2 == 0) {
+              // var cb2 = document.createElement("input");
+              // cb2.setAttribute("type", "checkbox");
+              // cb2.setAttribute("name", cols[Math.trunc((cols.length / 2) + i)]);
+              // cb2.setAttribute("value", cols[Math.trunc((cols.length / 2) + i)]);
+              // cb2.setAttribute("id", cols[Math.trunc((cols.length / 2) + i)]);
+              cell2.appendChild(crear_checkbox(Math.trunc((cols.length / 2) + i), cols[Math.trunc((cols.length / 2) + i)]));          
+              cell2.appendChild(document.createTextNode(" " + cols[Math.trunc((cols.length / 2) + i)]));
+            }
+            else {
+              if (Math.trunc((cols.length / 2) + i) + 1 < cols.length) {
+                // var cb2 = document.createElement("input");
+                // cb2.setAttribute("type", "checkbox");
+                // cb2.setAttribute("name", cols[Math.trunc((cols.length / 2) + i) + 1]);
+                // cb2.setAttribute("value", cols[Math.trunc((cols.length / 2) + i) + 1]);
+                // cb2.setAttribute("id", cols[Math.trunc((cols.length / 2) + i) + 1]);
+                cell2.appendChild(crear_checkbox((Math.trunc((cols.length / 2) + i) + 1), cols[Math.trunc((cols.length / 2) + i) + 1]));          
+                cell2.appendChild(document.createTextNode(" " + cols[Math.trunc((cols.length / 2) + i) + 1]));
+              }
+            }
+          }
+
+          $("#procesar_datos").css("display", "inline-block");
+
+          // if ((cols.length / 2 < cols.length && cols.length / 2) % 2 == 1) {
+          //   var cb2 = document.createElement("input");
+          //   cb2.setAttribute("type", "checkbox");
+          //   cb2.setAttribute("name", cols[Math.trunc((cols.length / 2) + i) + 1]);
+          //   cb2.setAttribute("value", cols[Math.trunc((cols.length / 2) + i) + 1]);
+          //   cb2.setAttribute("id", cols[Math.trunc((cols.length / 2) + i) + 1]);
+          //   cell2.appendChild(cb2);
+          //   cell2.appendChild(document.createTextNode((Math.trunc((cols.length / 2) + i) + 1) + " " + cols[Math.trunc((cols.length / 2) + i) + 1]));  
+          // }
+
+          // myTable+="<tbody><tr><td style='width: 100px;text-align: left;'>" + table_responsive.appendChild(checkbox) + " " + container.appendChild(label) + "</td>";        
+          // myTable+="<td style='width: 100px;text-align: left;'>" + "productos[i].prod" + "</td>";    
+          // myTable+="<td style='width: 100px;text-align: left;'>" + "productos[i].cant" + "</td>";    
+          // myTable+="<td style='width: 100px;text-align: left;'>" + "productos[i].pr" + "</td>";    
+        //   myTable+="</tr></tbody>";
+        }
+          
+        //   // myTable+="</table>";
+        //   document.getElementById('table_responsive').innerHTML = myTable;
+      };
+      // Leemos el contenido del archivo seleccionado
+      reader.readAsBinaryString(file);
+    }
+
+    $("#cdatos").css('opacity','1');
+
+    $("#procesar_datos").click(function(e) {
+
+      var chks = document.querySelectorAll("input[type='checkbox']");
+      var chk_selected = 0;
+      for(var i = 0; i < chks.length; i++) {
+          if (chks[i].checked) {
+            chk_selected++;
+          }   
+      }
+
+      if (chk_selected < 2) {
+        alert('Por favor, seleccione al menos dos columnas');
+        return false;
+      }
+    });
+
+    $("#cdatos").change(function(e) {
+      var uploadpath = $('#cdatos').val();
+      var fileExtension = uploadpath.substring(uploadpath.lastIndexOf(".") + 1, uploadpath.length);
+
+      if ($('#cdatos').val().length == 0) {
+        // write error message
+        return false;
+      }
+
+      if (fileExtension == "txt" || fileExtension == "csv" || fileExtension == "xls" || fileExtension == "xlsx") {
+          //write code for success
+          // alert('Tipo de archivo correcto!' + fileExtension);
+          readFile(e);
+      }
+      else {
+          //error code - select only excel files
+          alert('Tipo de archivo no soportado!')
+          return false;
+      }
+    });
+
+    $("#select_file").click(function(e) {
+      e.preventDefault();
+      $("#cdatos").trigger('click');
+    });
+  </script>
+
+{% endblock javascripts %}

@@ -1,0 +1,32 @@
+Mejorado:
+* Ejecución de algoritmos mediante un diccionario y el metodo eval()
+* Validación de formularios con botones submit
+* Botones de ordenamiento eliminados en columna de operaciones y de visualización
+* Sobreescritura de archivos existentes
+* Iconos para visualizar, editar y eliminar registros en tablas
+* Centrar columnas en tablas
+* Nombres de documentos html y enlaces
+* Archivo requierments.txt actualizado con las librerías necesarias
+* Mostrar mensaje cuando se situa el cursor sobre un ícono
+
+Nuevo:
+* Leer archivos txt, csv, xls, xlsx
+* Seleccionar predictores y variable objetivo
+* Listar, visualizar, eliminar y descargar archivos
+* Validar eliminación de archivos, algoritmos y análisis históricos
+* Extraer caracteristicas de imagenes satelitales
+* Validación de entradas numéricas en las coordenadas
+* Predicción de radiación solar en cualquier lugar de Colombia
+* Histórico de predicciones
+
+Pendiente:
+* Incluir hilos para agilizar la ejecución
+* Verificar coordenadas por fuera de la matríz de la imágen
+* Validar archivos que incluyan datos no numericos y verificar datos numericos con comas (,)
+* Mapas de calor para visualizar la correlación
+* Algoritmos PySpark
+* Ajuste de hiperparametros por busqueda aleatoria: RandomizedSearchCV
+
+Errores:
+* ImportError: Missing optional dependency 'openpyxl'.  Use pip or conda to install openpyxl.
+  En pd.read_excel() - Instalar: pip install pandas openpyxl

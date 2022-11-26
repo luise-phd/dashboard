@@ -1,0 +1,196 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Maps {% endblock title %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header bg-primary pb-6">
+      <div class="container-fluid">
+        <div class="header-body">
+          <div class="row align-items-center py-4">
+            <!-- <div class="col-lg-6 col-7">
+              <h6 class="h2 text-white d-inline-block mb-0">Google maps</h6>
+              <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                  <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                  <li class="breadcrumb-item"><a href="#">Maps</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Google maps</li>
+                </ol>
+              </nav>
+            </div>
+            <div class="col-lg-6 col-5 text-right">
+              <a href="#" class="btn btn-sm btn-neutral">New</a>
+              <a href="#" class="btn btn-sm btn-neutral">Filters</a>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page content -->
+    <div class="container-fluid mt--6">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="card bg-default">
+            <div class="card-header bg-transparent">
+              <div class="row align-items-center">
+                <div class="col">
+                  <h5 class="text-light text-uppercase ls-1 mb-1">Diagrama de dispersi&oacute;n</h5><br>
+                </div>
+              </div>
+            </div>
+          </div>          
+        </div>
+      </div>
+
+      <div class="row" id="div_resultados">
+        <div class="col-xl-12">
+          <div class="card bg-default">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col">
+                  <h3 class="mb-0">Resultados</h3><br>
+
+                  <input type="hidden" id="var_obj" value="{{ datos.0.0 }}">
+                  <input type="hidden" id="algoritmo" value="{{ datos.0.1 }}">
+                  <label class="form_control">Entrenamiento: {{ datos.0.2 }}</label><br>
+                  <label class="form_control">Pruebas: {{ datos.0.3 }}</label><br>
+                  <input type="hidden" id="resultados" value="{{ datos.0.4 }}">
+
+                  <center><div id="container" style="height: 500px" class="col-xl-8"></div></center>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include "includes/footer.html" %}
+      
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.36/dist/sweetalert2.all.min.js"></script>
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<script type="text/javascript">
+  //Ocultar y mostrar div_resultados
+  $(document).ready(function() {
+    res = $('#resultados').val().split("||");
+    y_test = res[0].split(";");
+    y_test_hat = res[1].split(";");
+    data = [[, ]]
+    for(var i=0; i<y_test.length; i++) { 
+      data.push([parseFloat(y_test[i]), parseFloat(y_test_hat[i])])
+    }
+
+    Highcharts.chart('container', {
+      chart: {
+        type: 'scatter',
+        zoomType: 'xy'
+      },
+      title: {
+        text: $('#algoritmo').val()
+      },
+      subtitle: {
+        text: 'Variable objetivo: '+$('#var_obj').val()
+      },
+      xAxis: {
+        title: {
+          enabled: true,
+          useHTML: true,
+          text: $('#var_obj').val() + ' real (W/m<sup>2</sup>)',
+          style: {
+            // fontSize:'1em',
+            fontWeight:'bold'
+          },
+        },
+        min: 0,
+        // max: 1200,
+        startOnTick: false,
+        endOnTick: true,
+        showLastLabel: true
+      },
+      yAxis: {
+        title: {
+          useHTML: true,
+          text: $('#var_obj').val() + ' estimada (W/m<sup>2</sup>)',
+          style: {
+            // fontSize:'1em',
+            fontWeight:'bold'
+          }   
+        },
+        min: 0,
+        // max: 1200,
+        startOnTick: false,
+      },
+      legend: {
+        layout: 'vertical',
+        align: 'left',
+        verticalAlign: 'top',
+        x: 100,
+        y: 70,
+        floating: true,
+        backgroundColor: Highcharts.defaultOptions.chart.backgroundColor,
+        borderWidth: 1,
+        enabled: false
+      },
+      plotOptions: {
+        scatter: {
+            marker: {
+              radius: 5,
+              states: {
+                hover: {
+                  enabled: true,
+                  lineColor: 'rgb(100,100,100)'
+                }
+              }
+            },
+            states: {
+              hover: {
+                marker: {
+                  enabled: false
+                }
+              }
+            },
+            tooltip: {
+              headerFormat: '<b>{series.name}</b><br>',
+              pointFormat: '{point.x}, {point.y}'
+            }
+        },
+      },
+      credits: {
+        enabled: false
+      },
+      series: [{
+        name: '(x, y)',
+        color: 'rgba(223, 83, 83, .5)',
+        data: data,
+        marker: {
+          enabled: true,
+          radius: 3
+        },
+      }, {
+        dashStyle: 'Dash',
+        name: 'diagonal',
+        color: 'black',
+        data: [{x: 0, y: 0}, {x: 1000, y: 1000}],
+        lineWidth: 1,
+        marker: {
+          enabled: true,
+          radius: 4
+        },
+      }],
+    });
+  });
+</script>
+
+{% endblock javascripts %}

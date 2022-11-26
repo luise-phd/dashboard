@@ -1,0 +1,424 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Maps {% endblock title %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header bg-primary pb-6">
+      <div class="container-fluid">
+        <div class="header-body">
+          <div class="row align-items-center py-4">
+            <!-- <div class="col-lg-6 col-7">
+              <h6 class="h2 text-white d-inline-block mb-0">Google maps</h6>
+              <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                  <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                  <li class="breadcrumb-item"><a href="#">Maps</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Google maps</li>
+                </ol>
+              </nav>
+            </div>
+            <div class="col-lg-6 col-5 text-right">
+              <a href="#" class="btn btn-sm btn-neutral">New</a>
+              <a href="#" class="btn btn-sm btn-neutral">Filters</a>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page content -->
+    <div class="container-fluid mt--6">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="card bg-default">
+            <div class="card-header bg-transparent">
+              <div class="row align-items-center">
+                <div class="col">
+                  <h5 class="text-light text-uppercase ls-1 mb-1">Analizar datos</h5><br>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card bg-default">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col">
+                  <form id="form" action="/realizar_analisis/" method="POST" onsubmit="return validateForm()">
+                    {% csrf_token %}
+                    <h3 class="mb-0">Seleccionar archivo</h3><br>
+                    <select class="form-control" onChange="form.submit();" name="arch_sel" id="arch_sel">
+                      <option value=""></option>
+                      {% for fila in archivos %}
+                        {% if fila.0 == arch_sel %}
+                          <option value="{{ fila.0 }}" selected>{{ fila.0 }}</option>
+                        {% else %}
+                          <option value="{{ fila.0 }}">{{ fila.0 }}</option>
+                        {% endif %}
+                      {% endfor %}
+                    </select><br>
+
+                    <!-- <h3 class="mb-0">Seleccionar variable objetivo</h3><br>
+                    <div style="column-count:4; column-gap:10px;">
+                      {% for fila in columns %}
+                        {% if fila == var_obj.0 %}
+                          <input class="form-control-alternative" type="radio" name="var_obj" onclick="activar_button()" value="{{ fila }}" checked> {{ fila }}<br>
+                        {% else %}
+                          <input class="form-control-alternative" type="radio" name="var_obj" onclick="activar_button()" value="{{ fila }}"> {{ fila }}<br>
+                        {% endif %}
+                      {% endfor %}
+                      <label class="form_control" style="color: lightcoral">{{ msg }}</label>
+                    </div><br> -->
+
+                    <h3 class="mb-0">Seleccionar predictores</h3><br>
+                    <div style="column-count:4; column-gap:10px;">
+                      {% for fila in columns %}
+                          <input class="form-control-alternative" type="checkbox" name="predictores[]" id="predictores" value="{{ fila }}"> {{ fila }}<br>
+                      {% endfor %}
+                    </div>
+                    <br>
+
+                    <h3 class="mb-0">Seleccionar variable objetivo</h3><br>
+                    <select class="form-control" name="var_obj" id="var_obj">
+                      <option value=""></option>
+                      {% for fila in columns %}
+                          <option value="{{ fila }}">{{ fila }}</option>
+                      {% endfor %}
+                    </select><br>
+
+                    <h3 class="mb-0">Seleccionar algoritmo de Machine Learning</h3><br>
+                    <select class="form-control" name="alg_sel" id="alg_sel">
+                      <option value=""></option>
+                      {% for fila in algoritmos %}
+                        {% if fila.0 == alg_sel %}
+                          <option value="{{ fila.0 }}" selected>{{ fila.0 }}</option>
+                        {% else %}
+                          <option value="{{ fila.0 }}">{{ fila.0 }}</option>
+                        {% endif %}
+                      {% endfor %}
+                    </select><br>
+                    <input type="submit" id="btn_ranalisis" class="btn btn-primary col-xl-12" value="Realizar análisis">
+                    <!-- <br><br>
+                    <div id="validar-algoritmo" class="alert alert-danger d-none" role="alert" style="text-align: center">
+                      El algoritmo no esta disponible
+                    </div> -->
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="row" id="mensaje">
+        <div class="col-xl-12">
+          <div class="card bg-default">
+            <div class="card-header">
+              
+                <div id="validar-algoritmo" class="alert alert-danger d-none" role="alert" style="text-align: center">
+                  El algoritmo no esta disponible.
+                </div>
+              
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- <div class="row" id="div_resultados">
+        <div class="col-xl-12">
+          <div class="card bg-default">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col">
+                  <h3 class="mb-0">Resultados</h3><br>
+
+                  <label class="form_control">Entrenamiento: {{ resultados.0 }}</label><br>
+                  <label class="form_control">Pruebas: {{ resultados.1 }}</label><br>
+                  <input type="hidden" id="y_test" value="{{ resultados.2 }}">
+                  <input type="hidden" id="y_test_hat" value="{{ resultados.3 }}">
+
+                  <center><div id="container" style="height: 500px" class="col-xl-8"></div></center>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+      {% include "includes/footer.html" %}
+      
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.36/dist/sweetalert2.all.min.js"></script>
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<script type="text/javascript">
+  function validateForm() {
+    // console.log($("input[name='predictores[]']:checked").length)
+    if($('#arch_sel').val() == "") {
+      Swal.fire({
+          icon: 'info',
+          text: 'Por favor seleccione el archivo',
+        });
+      return false;
+    }
+    else if($("input[name='predictores[]']:checked").length == 0) {
+      Swal.fire({
+          icon: 'info',
+          text: 'Por favor seleccione los predictores',
+        });
+      return false;
+    }
+    else if($("input[name='predictores[]']:checked").length > 0 && $('#var_obj').val() != '') {
+      pred = $("input[name='predictores[]']:checked").map(function() {
+              return $(this).val();
+            }).get();
+      b = false
+      for(i=0; i<pred.length; i++) {
+        if(pred[i] == $('#var_obj').val())
+          b = true
+      }
+      if(b == true) {
+        Swal.fire({
+            icon: 'info',
+            text: 'La variable objetivo no debería ser uno de los predictores',
+          });
+        return false;
+      }
+      else if($('#alg_sel').val() == "") {
+        Swal.fire({
+            icon: 'info',
+            text: 'Por favor seleccione el algoritmo',
+          });
+        return false;
+      }
+    }
+    else if($('#var_obj').val() == "") {
+      Swal.fire({
+          icon: 'info',
+          text: 'Por favor seleccione la variable objetivo',
+        });
+      return false;
+    }
+    else if($('#alg_sel').val() == "") {
+      Swal.fire({
+          icon: 'info',
+          text: 'Por favor seleccione el algoritmo',
+        });
+      return false;
+    }
+  }
+
+  //Ocultar y mostrar div_resultados
+  $(document).ready(function() {
+    // if($('#y_test').val() == '' && $('#arch_sel').val() == '' || $('#alg_sel').val() == '') {
+    //   var x = document.getElementById("div_resultados");
+    //   if (x.style.display === "none") {
+    //     x.style.display = "block";
+    //   } else {
+    //     x.style.display = "none";
+    //   }
+      // var x = document.getElementById("validar-algoritmo");
+      // if (x.style.display === "none") {
+      //   x.style.display = "block";
+      // } else {
+      //   x.style.display = "none";
+      // }
+    // }
+    // else {
+    //   if($('#y_test').val() == '') {
+    //     $("#validar-algoritmo").removeClass("d-none");
+    //     document.getElementById('validar-algoritmo').scrollIntoView({
+    //       behavior: 'smooth'
+    //     });
+    //     var x = document.getElementById("div_resultados");
+    //     if (x.style.display === "none") {
+    //       x.style.display = "block";
+    //     } else {
+    //       x.style.display = "none";
+    //     }
+    //   }
+    //   else {
+        // var x = document.getElementById("validar-algoritmo");
+        // if (x.style.display === "none") {
+        //   x.style.display = "block";
+        // } else {
+        //   x.style.display = "none";
+        // }
+    //   }
+    // }
+
+    // if ($('#arch_sel').val() != '' && $('#alg_sel').val() != '') {
+      // window.scroll({ top: document.body.scrollHeight, left: 0, behavior: 'smooth' });
+    //   document.getElementById('div_resultados').scrollIntoView({
+    //     behavior: 'smooth'
+    //   });
+    // }
+
+    // y_test = $('#y_test').val().split(";");
+    // y_test_hat = $('#y_test_hat').val().split(";");
+    // data = [[, ]]
+    // for(var i=0; i<y_test.length; i++) { 
+    //   data.push([parseFloat(y_test[i]), parseFloat(y_test_hat[i])])
+    // }
+    
+    // if($('#arch_sel').val() != '' && $('#alg_sel').val() != '')
+    //   $('#btn_ranalisis').prop('disabled', false);
+
+    // Highcharts.chart('container', {
+    //   chart: {
+    //     type: 'scatter',
+    //     zoomType: 'xy'
+    //   },
+    //   title: {
+    //     text: $('#alg_sel').val()
+    //   },
+    //   subtitle: {
+    //     text: 'Variable objetivo: '+$('input[name=var_obj]:checked', '#form').val()
+    //   },
+    //   xAxis: {
+    //     title: {
+    //       enabled: true,
+    //       useHTML: true,
+    //       text: $('input[name=var_obj]:checked', '#form').val() + ' real (W/m<sup>2</sup>)',
+    //       style: {
+    //         // fontSize:'1em',
+    //         fontWeight:'bold'
+    //       },
+    //     },
+    //     min: 0,
+    //     // max: 1200,
+    //     startOnTick: false,
+    //     endOnTick: true,
+    //     showLastLabel: true
+    //   },
+    //   yAxis: {
+    //     title: {
+    //       useHTML: true,
+    //       text: $('input[name=var_obj]:checked', '#form').val() + ' estimada (W/m<sup>2</sup>)',
+    //       style: {
+    //         // fontSize:'1em',
+    //         fontWeight:'bold'
+    //       }   
+    //     },
+    //     min: 0,
+    //     // max: 1200,
+    //     startOnTick: false,
+    //   },
+    //   legend: {
+    //     layout: 'vertical',
+    //     align: 'left',
+    //     verticalAlign: 'top',
+    //     x: 100,
+    //     y: 70,
+    //     floating: true,
+    //     backgroundColor: Highcharts.defaultOptions.chart.backgroundColor,
+    //     borderWidth: 1,
+    //     enabled: false
+    //   },
+    //   plotOptions: {
+    //     scatter: {
+    //         marker: {
+    //           radius: 5,
+    //           states: {
+    //             hover: {
+    //               enabled: true,
+    //               lineColor: 'rgb(100,100,100)'
+    //             }
+    //           }
+    //         },
+    //         states: {
+    //           hover: {
+    //             marker: {
+    //               enabled: false
+    //             }
+    //           }
+    //         },
+    //         tooltip: {
+    //           headerFormat: '<b>{series.name}</b><br>',
+    //           pointFormat: '{point.x}, {point.y}'
+    //         }
+    //     },
+    //   },
+    //   credits: {
+    //     enabled: false
+    //   },
+    //   series: [{
+    //     name: '(x, y)',
+    //     color: 'rgba(223, 83, 83, .5)',
+    //     data: data,
+    //     marker: {
+    //       enabled: true,
+    //       radius: 3
+    //     },
+    //   }, {
+    //     dashStyle: 'Dash',
+    //     name: 'diagonal',
+    //     color: 'black',
+    //     data: [{x: 0, y: 0}, {x: 1000, y: 1000}],
+    //     lineWidth: 1,
+    //     marker: {
+    //       enabled: true,
+    //       radius: 4
+    //     },
+    //   }],
+    // }); //function(chart) {
+    //   chart.renderer.path(['M', 80, 440, 'L', 990, -180])
+    //     .attr({
+    //       'stroke-width': 1,
+    //       stroke: 'black'
+    //     })
+    //     .on('mouseover',function(){
+    //       $(this).attr({
+    //       	'stroke': 'blue'
+    //       })
+    //     })
+    //     .on('mouseout',function(){
+    //       $(this).attr({
+    //       	'stroke': 'black'
+    //       })
+    //     }).add();
+    // });
+  });
+  
+  // $("#alg_sel").change(function(e) {
+  //   if($('#arch_sel').val() == '' || $('#alg_sel').val() == '')
+  //     $('#btn_ranalisis').prop('disabled', true);
+  //   else
+  //     $('#btn_ranalisis').prop('disabled', false);
+  // });
+
+  // $("#btn_ranalisis").click(function(e) {
+  //   if(!$('input[name=var_obj]:checked').val())
+  //     // Swal.fire({
+  //     //     html: `<h1>Información!!</h1>
+  //     //     <p>Por favor seleccione una variable objetivo</p>
+  //     //     `,
+  //     // });
+  //     Swal.fire({
+  //       icon: 'info',
+  //       // title: 'Información!!',
+  //       text: 'Por favor seleccione una variable objetivo',
+  //       // footer: '<a href="">Why do I have this issue?</a>'
+  //     });
+  //   else {
+  //     $('#btn_ranalisis').prop('type', 'submit')
+  //     // $('#form').submit();
+  //   }
+  // });
+
+  // function activar_button() {
+  //   $('#btn_ranalisis').prop('disabled', false);
+  // }
+</script>
+
+{% endblock javascripts %}
