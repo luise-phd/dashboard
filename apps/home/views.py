@@ -715,14 +715,22 @@ def abrir_archivo(request, id):
         cur = connection().cursor(cursor_factory= psycopg2.extras.DictCursor)
         cur.execute("SELECT archivo FROM archivos al WHERE idarch='"+str(id)+"'")
         datos = cur.fetchall()
-        nom_archivo = "".join(datos[0])
+        try:
+            nom_archivo = "".join(datos[0])
+            ruta_arc = 'data/'+request.user.username+'--'+nom_archivo
+        except:
+            cur = connection().cursor(cursor_factory= psycopg2.extras.DictCursor)
+            cur.execute("SELECT archivo FROM predicciones_histo al WHERE idprh='"+str(id)+"'")
+            datos = cur.fetchall()
+            nom_archivo = "".join(datos[0])
+            ruta_arc = 'data/'+nom_archivo
 
         if '.csv' in nom_archivo:
-            df = pd.read_csv('data/'+request.user.username+'--'+nom_archivo, sep=';')
+            df = pd.read_csv(ruta_arc, sep=';')
         elif '.xls' in nom_archivo or '.xlsx' in nom_archivo:
-            df = pd.read_excel('data/'+request.user.username+'--'+nom_archivo, engine='openpyxl')
+            df = pd.read_excel(ruta_arc, engine='openpyxl')
         elif '.txt' in nom_archivo:
-            df = pd.read_csv('data/'+request.user.username+'--'+nom_archivo, delimiter='\t')
+            df = pd.read_csv(ruta_arc, delimiter='\t')
         datos = df.values.tolist()
         columns = df.columns
 
