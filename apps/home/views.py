@@ -467,7 +467,7 @@ def realizar_analisis(request):
         if '.csv' in arch_sel:
             df = pd.read_csv('data/'+request.user.username+'--'+arch_sel, sep=';')
         elif '.xls' in arch_sel or '.xlsx' in arch_sel:
-            df = pd.read_excel('data/'+request.user.username+'--'+arch_sel)
+            df = pd.read_excel('data/'+request.user.username+'--'+arch_sel, engine='openpyxl')
         elif '.txt' in arch_sel:
             df = pd.read_csv('data/'+request.user.username+'--'+arch_sel, delimiter='\t')
 
@@ -720,7 +720,7 @@ def abrir_archivo(request, id):
         if '.csv' in nom_archivo:
             df = pd.read_csv('data/'+request.user.username+'--'+nom_archivo, sep=';')
         elif '.xls' in nom_archivo or '.xlsx' in nom_archivo:
-            df = pd.read_excel('data/'+request.user.username+'--'+nom_archivo)
+            df = pd.read_excel('data/'+request.user.username+'--'+nom_archivo, engine='openpyxl')
         elif '.txt' in nom_archivo:
             df = pd.read_csv('data/'+request.user.username+'--'+nom_archivo, delimiter='\t')
         datos = df.values.tolist()
@@ -761,7 +761,7 @@ def subir_csv(request):
             if '.csv' in filename:
                 df = pd.read_csv('data/'+filename, sep=';')
             elif '.xls' in filename or '.xlsx' in filename:
-                df = pd.read_excel('data/'+filename)
+                df = pd.read_excel('data/'+filename, engine='openpyxl')
             elif '.txt' in filename:
                 df = pd.read_csv('data/'+filename, delimiter='\t')
             datos = df.head(100).values.tolist()
@@ -772,7 +772,7 @@ def subir_csv(request):
             if '.csv' in myFile.name:
                 df = pd.read_csv('data/'+usuario+'--'+myFile.name, sep=';')
             elif '.xls' in myFile.name or '.xlsx' in myFile.name:
-                df = pd.read_excel('data/'+usuario+'--'+myFile.name)
+                df = pd.read_excel('data/'+usuario+'--'+myFile.name, engine='openpyxl')
             elif '.txt' in myFile.name:
                 df = pd.read_csv('data/'+usuario+'--'+myFile.name, delimiter='\t')
             datos = df.head(100).values.tolist()
