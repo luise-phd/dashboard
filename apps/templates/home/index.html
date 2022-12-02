@@ -28,7 +28,7 @@
     </div>
 
     <!-- Page content -->
-    <form id="form" action="/subir_csv/" method="POST" enctype="multipart/form-data">
+    <form id="form" action="/subir_csv/" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
       <div class="container-fluid mt--6">
         <div class="row">
           <div class="col-xl-12">
@@ -117,6 +117,8 @@
   <script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.24/build/vfs_fonts.js"></script> -->
   <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.1/js/buttons.print.min.js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.36/dist/sweetalert2.all.min.js"></script>
 
   <!--Export table button CSS-->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
@@ -151,12 +153,19 @@
     $(document).ready(function() {
       
     });
-    // function val_archivo(msg) {
-    //   if(msg != '') {
-    //     alert(msg)
-    //     msg=''
-    //   }
-    // }
+	
+	function validateForm() {
+      cadena = $('#seleccionar').val().split('.')
+      extension = cadena[cadena.length - 1]
+      console.log(cadena[cadena.length - 1])
+      if(extension != 'txt' && extension != 'csv' && extension != 'xls' && extension != 'xlsx') {
+        Swal.fire({
+            icon: 'info',
+            text: 'Tipo de archivo no soportado',
+          });
+        return false;
+      }    
+    }
 
     // $("#btn_subir").click(function(e) {
     //   if($("#msg").val() == 'El archivo ya existe')
