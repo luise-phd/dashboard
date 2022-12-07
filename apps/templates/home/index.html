@@ -38,15 +38,12 @@
                   <div class="col" id="div_texto">
                     <h5 class="text-light text-uppercase ls-1 mb-1">Cargar datos</h5>
                     <input type="file" id="seleccionar" name="myFile" accept=".csv, .txt, .xls, .xlsx">
-                    <input type="submit" id="btn_subir" class="btn btn-sm btn-primary" value="Subir" disabled>
+                    <input type="submit" id="btn_subir" class="btn btn-sm btn-primary" value="Subir" disabled><br><br>
+                    <span>El sistema solo admite archivos txt, csv, xls y xlsx, que contengan al menos una fila con datos númericos.</span>
                     {% csrf_token %}
-                    <!-- <label id="lbl_msg">{{ datos }}</label> -->
                     <input type="hidden" name="usuario" value="{{ request.user.username }}">
-                    <!-- <input type="hidden" id="msg" value="{{ datos }}"> -->
-                    <!-- {% if datos != '' %}
-                      {{ datos }}
-                    {% endif %}   -->
-                    <!-- <input type="file" id="cdatos" accept=".csv, .txt, .xls, .xlsx" value="Cargar datos"> -->
+                    <input type="hidden" id="cant_reg" value="{{ cant_reg }}">
+                    <input type="hidden" id="no_num" value="{{ no_num }}">
                   </div>
                 </div>
               </div>
@@ -59,7 +56,7 @@
               <div class="card-header border-0">
                 <div class="row align-items-center">
                   <div class="col">
-                    <h3 class="mb-0">{{ nom_arch }}</h3><br>
+                    <h3 class="mb-0" id="nom_arch">{{ nom_arch }}</h3><br>
                     <table class="table table-striped table-sm table-responsive" id="main_table"> 
                       <thead class="thead-light">
                         <tr style="line-height: 5px">  
@@ -117,7 +114,7 @@
   <script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.24/build/vfs_fonts.js"></script> -->
   <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.1/js/buttons.print.min.js"></script>
-  
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.36/dist/sweetalert2.all.min.js"></script>
 
   <!--Export table button CSS-->
@@ -151,10 +148,19 @@
     $('.dataTables_length').addClass('bs-select');
 
     $(document).ready(function() {
-      
+      if($('#cant_reg').val() == -1 || $('#no_num').val() == -1) {
+        $('#nom_arch').html('');
+        $('#main_table').DataTable().clear();
+        $('#main_table').empty();
+        Swal.fire({
+            icon: 'info',
+            text: 'El sistema solo admite archivos que contengan al menos una fila con datos númericos',
+          });
+        return false;
+      }
     });
-	
-	function validateForm() {
+    
+    function validateForm() {
       cadena = $('#seleccionar').val().split('.')
       extension = cadena[cadena.length - 1]
       console.log(cadena[cadena.length - 1])

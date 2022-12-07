@@ -97,7 +97,7 @@ def descargar_csv_rad_solar(request, id):
         cur = connection().cursor(cursor_factory= psycopg2.extras.DictCursor)
         cur.execute("SELECT archivo FROM predicciones_histo WHERE idprh = '"+str(id)+"'")
         datos = cur.fetchall()
-        file_path = os.path.join(Path(__file__).parent.parent.parent, r'data/'+ datos[0][0])
+        file_path = os.path.join(Path(__file__).parent.parent.parent, r'data\\'+ datos[0][0])
         print(file_path)
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
@@ -682,7 +682,7 @@ def descargar_archivo(request, id):
         cur.execute("SELECT archivo FROM archivos WHERE idarch = "+str(id)+" ORDER BY archivo")
         datos = cur.fetchall()
         nom_arch = request.user.username + '--' + ''.join(datos[0])
-        file_path = os.path.join(Path(__file__).parent.parent.parent, r'data/'+ nom_arch)
+        file_path = os.path.join(Path(__file__).parent.parent.parent, r'data\\'+ nom_arch)
         print(file_path)
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
@@ -751,6 +751,9 @@ def analizar_datos(request):
 
 def subir_csv(request):
     datos=""
+    cant_reg=0
+    no_num=0
+
     if request.method == 'POST' and request.FILES['myFile']:
         usuario = request.POST['usuario']
         myFile = request.FILES['myFile']
@@ -759,12 +762,6 @@ def subir_csv(request):
         if not fs.exists(usuario + '--' + myFile.name):
             filename = fs.save(usuario + '--' + myFile.name, myFile)
             uploaded_file_url = fs.url(filename)
-            if connection() != None:
-                cur = connection().cursor(cursor_factory= psycopg2.extras.DictCursor)
-                cur.execute("""
-                    INSERT INTO archivos (usuario, archivo, fecha)
-                    VALUES ('"""+usuario+"""', '"""+filename.split(usuario + '--')[-1]+"""', current_timestamp)
-                """)
 
             if '.csv' in filename:
                 df = pd.read_csv('data/'+filename, sep=';')
@@ -774,6 +771,18 @@ def subir_csv(request):
                 df = pd.read_csv('data/'+filename, delimiter='\t')
             datos = df.head(100).values.tolist()
             columns = df.columns
+            if(df.shape[0] == 0):
+                cant_reg = -1
+            for col in columns:
+                if(df[col].dtype == "object"):
+                    no_num = -1
+
+            if connection() != None and cant_reg != -1 and no_num != -1:
+                cur = connection().cursor(cursor_factory= psycopg2.extras.DictCursor)
+                cur.execute("""
+                    INSERT INTO archivos (usuario, archivo, fecha)
+                    VALUES ('"""+usuario+"""', '"""+filename.split(usuario + '--')[-1]+"""', current_timestamp)
+                """)
         else:
             filename = fs.delete(usuario + '--' + myFile.name)
             filename = fs.save(usuario + '--' + myFile.name, myFile)
@@ -785,10 +794,19 @@ def subir_csv(request):
                 df = pd.read_csv('data/'+usuario+'--'+myFile.name, delimiter='\t')
             datos = df.head(100).values.tolist()
             columns = df.columns
+            if(df.shape[0] == 0):
+                cant_reg = -1
             for col in columns:
-                print(df[col].dtype)
+                if(df[col].dtype == "object"):
+                    no_num = -1
 
-    context = {"datos": datos, "nom_arch": myFile.name+" (Primeras 100 filas...)", "columns": columns}
+    context = {
+        "datos": datos,
+        "nom_arch": myFile.name+" (Primeras 100 filas...)",
+        "columns": columns,
+        "cant_reg": cant_reg,
+         "no_num": no_num
+    }
     return render(request, '../templates/home/index.html', context=context)
 
 

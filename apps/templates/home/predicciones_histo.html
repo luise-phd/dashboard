@@ -22,7 +22,8 @@
             <div class="card-header bg-transparent">
               <div class="row align-items-center">
                 <div class="col">
-                  <h5 class="text-light text-uppercase ls-1 mb-1">Histórico de predicciones</h5><br>
+                  <h5 class="text-light text-uppercase ls-1 mb-1">Histórico de predicciones</h5>
+                  <span>Resumen de predicciones realizadas.</span>
                 </div>
               </div>
             </div>
@@ -53,7 +54,7 @@
                           <td>{{ fila.4 }}</td>
                           <td>{{ fila.5 }}</td>
                           <td>
-							<a href="/abrir_archivo/{{ fila.0 }}/" class="a active" title="Abrir archivo">
+                            <a href="/abrir_archivo/{{ fila.0 }}/" class="a active" title="Abrir archivo">
                               <i class="fa fa-folder-open text-blue"></i>
                             </a>
                             <a href="/descargar_csv_rad_solar/{{ fila.0 }}/" download="{{ fila.2 }}" title="Descargar archivo">
