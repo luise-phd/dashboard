@@ -153,10 +153,9 @@
         $('#main_table').DataTable().clear();
         $('#main_table').empty();
         Swal.fire({
-            icon: 'info',
-            text: 'El sistema solo admite archivos que contengan al menos una fila con datos númericos',
-          });
-        return false;
+          icon: 'info',
+          text: 'El sistema solo admite archivos que contengan al menos una fila con datos númericos',
+        });
       }
     });
     
@@ -172,11 +171,6 @@
         return false;
       }    
     }
-
-    // $("#btn_subir").click(function(e) {
-    //   if($("#msg").val() == 'El archivo ya existe')
-    //     alert($("#msg").val())
-    // });
 
     $("#seleccionar").change(function(e) {
       if($('#seleccionar').val() != '')

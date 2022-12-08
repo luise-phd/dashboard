@@ -23,7 +23,7 @@
               <div class="row align-items-center">
                 <div class="col">
                   <h5 class="text-light text-uppercase ls-1 mb-1">Predicción de radiación solar en Colombia a partir de imágenes de satélite</h5>
-                  <span>Para realizar una predicción de radiación solar, debe ingresar el nombre del lugar, las coordenadas geográficas y el año.</span>
+                  <span>El procesamiento se hará en segundo plano y cuando finalice, estará disponible en el histórico de predicciones, mientras tanto, puede realizar otras acciones en el sistema.</span>
                 </div>
               </div>
             </div>
@@ -34,12 +34,7 @@
                 <div class="col">
                   <form id="form" action="/procesar_imgs/" method="POST" onsubmit="return validateForm()">
                     {% csrf_token %}
-                    <h3 class="mb-0">Ingresar el nombre del lugar, las coordenadas y el año</h3><br>
-                    <!-- <div class="row">
-                      <div class="col-md-4"><h3 class="mb-0">Latitud</h3></div>
-                      <div class="col-md-4"><h3 class="mb-0">Longitud</h3></div>
-                      <div class="col-md-4"><h3 class="mb-0">Año</h3></div>
-                    </div><br> -->
+                    <h3 class="mb-0">Por favor ingrese el nombre del lugar, las coordenadas geográficas y seleccione el año.</h3><br>
                     <div class="row">
                       <div class="col-md-3">
                         <input type="text" class="form-control" id="nombre" placeholder="Nombre" name="nombre" value="Algún lugar">
@@ -62,6 +57,7 @@
                       </div>
                     </div><br>
                     <input type="submit" id="btn_rproceso" class="btn btn-primary col-xl-12" value="Realizar proceso">
+                    <input type="hidden" id="error" value="{{ datos }}">
                   </form>
                 </div>
               </div>
@@ -101,15 +97,20 @@
     }
     if($('#nombre').val() == "" || $('#latitud').val() == "" || $('#longitud').val() == "" || $('#ann').val() == "") {
       Swal.fire({
-          icon: 'info',
-          text: 'Por favor ingrese todos los datos',
-        });
+        icon: 'info',
+        text: 'Por favor ingrese todos los datos',
+      });
       return false;
     }
   }
   
   $(document).ready(function() {
-    
+    if($('#error').val() == -1) {
+      Swal.fire({
+        icon: 'info',
+        text: 'El procesamiento no fue posible. Las coordenadas están fuera del rango de la imagen, solo cubre el territorio colombiano y las fronteras con los países vecinos',
+      });
+    }
   });
 </script>
 

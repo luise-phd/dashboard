@@ -10,30 +10,32 @@ Mejorado:
 01/12/2022: Mostrar mensaje cuando se situa el cursor sobre un ícono
 02/12/2022: Repositorio del proyecto creado en GitHub
 07/12/2022: Opciones adicionar, editar y eliminar en el formulario algoritmos desactivadas
-07/12/2022: Validación de archivos sin contenido o con contenido no numérico
 
 Nuevo:
-* Leer archivos txt, csv, xls, xlsx
-* Seleccionar predictores y variable objetivo
-* Listar, visualizar, eliminar y descargar archivos
-* Validar eliminación de archivos, algoritmos y análisis históricos
-* Extraer caracteristicas de imagenes satelitales
-* Validación de entradas numéricas en las coordenadas
-* Predicción de radiación solar en cualquier lugar de Colombia
-* Histórico de predicciones
+01/12/2022: Leer archivos txt, csv, xls, xlsx
+01/12/2022: Seleccionar predictores y variable objetivo
+01/12/2022: Listar, visualizar, eliminar y descargar archivos
+01/12/2022: Validar eliminación de archivos, algoritmos y análisis históricos
+01/12/2022: Extraer caracteristicas de imagenes satelitales
+01/12/2022: Validación de entradas numéricas en las coordenadas
+01/12/2022: Predicción de radiación solar en cualquier lugar de Colombia
+01/12/2022: Histórico de predicciones
+07/12/2022: Validación de archivos sin contenido o con contenido no numérico
+08/12/2022: Programación multi-hilo en el procesamiento de imágenes para la predicción de radiación solar
+08/12/2022: Verificación de las coordenadas fuera de la matríz de la imágen
 
 Pendiente:
-* Incluir hilos para agilizar la ejecución
-* Verificar coordenadas por fuera de la matríz de la imágen
-* Validar archivos que incluyan datos no numericos y verificar datos numericos con comas (,)
 * Mapas de calor para visualizar la correlación
 * Algoritmos PySpark
 * Ajuste de hiperparametros por busqueda aleatoria: RandomizedSearchCV
 
-Errores:
+Gestión de errores:
 * ImportError: Missing optional dependency 'openpyxl'.  Use pip or conda to install openpyxl.
   En pd.read_excel() - Instalar: pip3 install pandas openpyxl
 
+
+Observaciones
+----------------------------------------------------------
 ssh 34.130.237.2
 sudo su
 cd /home/ubuntu/dashboard
@@ -53,18 +55,26 @@ Ctrl+Z - Ctrl+X - Ctrl+C
 
 docker-compose up -d
 docker ps -a
-
+----------------------------------------------------------
+Clonar Repositorio
+----------------------------------------------------------
 git clone https://github.com/luise-phd/dashboard
-
+----------------------------------------------------------
+Publicar en el repo de GitHub
+----------------------------------------------------------
 git add .
 git commit -m "base de datos"
 git push origin main
 git pull origin main
-
-Matar puerto
+----------------------------------------------------------
+Finalizar puerto
+----------------------------------------------------------
 sudo su
 cd dashboard
 fuser -n tcp -k 80
-
+----------------------------------------------------------
+Finalizar todos los puerto utilizados por ngrok
+----------------------------------------------------------
 killall ngrok
 ngrok http 80
+-----------------------------

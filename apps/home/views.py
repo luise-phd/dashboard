@@ -14,6 +14,7 @@ from django.core.files.storage import FileSystemStorage
 from django.urls import reverse
 
 import os
+import threading
 import psycopg2
 import psycopg2.extras
 import pyproj
@@ -164,7 +165,6 @@ def procesar_imgs(request):
     for elem in files:
         if (elem.find('.tiff') == -1 and elem != 'GeoTiff'):
             images.append(elem)
-    # print(len(images))
 
     df_ccal = pd.read_csv('data/Coeficiente de calibración.csv', sep=';')
     df_fcorr = pd.read_csv('data/Factor de corrección GOES.csv', sep=';')
@@ -180,6 +180,7 @@ def procesar_imgs(request):
     df['brilloSolarC'] = 0
     df['dj'] = 0
 
+    band = 0
     x = 0
     for i in images:
         if (i.find('.tiff') == -1):
@@ -205,6 +206,7 @@ def procesar_imgs(request):
                 nd = goes_vis2[row, col]
             except IndexError:
                 print('Error. Coordenadas por fuera de la imágen')
+                band = -1
                 break
             print(f'Nivel digital = {nd:.2f}')
 
@@ -253,6 +255,15 @@ def procesar_imgs(request):
 
             print('-------------------------------------------------')
 
+    if(band != -1):
+        t = threading.Thread(target = realizar_prediccion, args = (df, request, nom, year, lat, lon))
+        t.start()
+    
+    context = {"datos": band}    
+    return render(request, '../templates/home/radiacion_solar.html', context=context)
+
+
+def realizar_prediccion(df, request, nom, year, lat, lon):
     # Reflectancia mínima y máxima por hora, asociada a condiciones de cielo despejado y cubierto
     df_r_min_max = df.groupby(['hora'], as_index=False).agg(rmin = ('reflectancia','min'), rmax=('reflectancia','max'))
 
@@ -418,13 +429,9 @@ def procesar_imgs(request):
                 INSERT INTO predicciones_histo (lugar, lat, lon, ann, fecha, usuario, archivo)
                 VALUES ('"""+nom+"""', '"""+str(lat)+"""', '"""+str(lon)+"""', '"""+year+"""', current_timestamp, '"""+request.user.username+"""', '"""+nom_archivo+"""')""")
             
-        cur4 = connection().cursor(cursor_factory= psycopg2.extras.DictCursor)
-        cur4.execute("SELECT * FROM predicciones_histo WHERE usuario='"+request.user.username+"'")
-        datos = cur4.fetchall()
-
-    context = {"datos": datos}
-
-    return render(request, '../templates/home/predicciones_histo.html', context=context)
+        # cur4 = connection().cursor(cursor_factory= psycopg2.extras.DictCursor)
+        # cur4.execute("SELECT * FROM predicciones_histo WHERE usuario='"+request.user.username+"'")
+        # datos = cur4.fetchall()
 
 
 def ver_diagrama(request, id):
