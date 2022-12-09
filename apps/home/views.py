@@ -821,7 +821,7 @@ def connection():
     hostname = 'localhost'
     database = 'doctorado'
     username = 'postgres'
-    pwd = 'admin'
+    pwd = 'postgres'
     port_id = 5432
 
     conn = None
