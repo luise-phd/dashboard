@@ -98,7 +98,8 @@ def descargar_csv_rad_solar(request, id):
         cur = connection().cursor(cursor_factory= psycopg2.extras.DictCursor)
         cur.execute("SELECT archivo FROM predicciones_histo WHERE idprh = '"+str(id)+"'")
         datos = cur.fetchall()
-        file_path = os.path.join(Path(__file__).parent.parent.parent, r'data\\'+ datos[0][0])
+        # file_path = os.path.join(Path(__file__).parent.parent.parent, r'data\\'+ datos[0][0])
+        file_path = os.path.join(Path(__file__).parent.parent.parent, r'data/'+ nom_arch)
         print(file_path)
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
@@ -689,7 +690,8 @@ def descargar_archivo(request, id):
         cur.execute("SELECT archivo FROM archivos WHERE idarch = "+str(id)+" ORDER BY archivo")
         datos = cur.fetchall()
         nom_arch = request.user.username + '--' + ''.join(datos[0])
-        file_path = os.path.join(Path(__file__).parent.parent.parent, r'data\\'+ nom_arch)
+        # file_path = os.path.join(Path(__file__).parent.parent.parent, r'data\\'+ nom_arch)
+        file_path = os.path.join(Path(__file__).parent.parent.parent, r'data/'+ nom_arch)
         print(file_path)
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
