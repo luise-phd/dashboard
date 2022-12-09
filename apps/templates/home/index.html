@@ -39,7 +39,7 @@
                     <h5 class="text-light text-uppercase ls-1 mb-1">Cargar datos</h5>
                     <input type="file" id="seleccionar" name="myFile" accept=".csv, .txt, .xls, .xlsx">
                     <input type="submit" id="btn_subir" class="btn btn-sm btn-primary" value="Subir" disabled><br><br>
-                    <span>El sistema solo admite archivos txt, csv, xls y xlsx, que contengan al menos una fila con datos númericos.</span>
+                    <span>El sistema solo admite archivos (txt, csv, xls y xlsx) que contengan datos númericos.</span>
                     {% csrf_token %}
                     <input type="hidden" name="usuario" value="{{ request.user.username }}">
                     <input type="hidden" id="cant_reg" value="{{ cant_reg }}">
@@ -154,7 +154,7 @@
         $('#main_table').empty();
         Swal.fire({
           icon: 'info',
-          text: 'El sistema solo admite archivos que contengan al menos una fila con datos númericos',
+          text: 'El sistema solo admite archivos que contengan datos númericos',
         });
       }
     });
