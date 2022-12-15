@@ -1,0 +1,623 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Dashboard {% endblock title %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header bg-primary pb-6">
+      <div class="container-fluid">
+        <div class="header-body">
+          <div class="row align-items-center py-4">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page content -->
+    <div class="container-fluid mt--6">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="card bg-default">
+            <div class="card-header bg-transparent">
+              <div class="row align-items-center">
+                <div class="col">
+                  <h5 class="text-light text-uppercase ls-1 mb-1">Dashboard</h5>
+                  <span>Cuadro de control que presenta las gráficas de variables meteorológicas.</span>
+                </div>
+              </div>
+            </div>
+          </div>          
+        </div>
+      </div>
+
+      <div class="row" id="div_resultados">
+        <div class="col-xl-8">
+          <div class="card bg-default">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col">
+                  <input type="hidden" id="valores" value="{{ pr_mes_temp }}">
+                  <div id="container" style="height: 400px" class="col-xl-12"></div>                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-4">
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="card bg-default">
+                <div class="card-header">
+                  <div class="row align-items-center">
+                    <div class="col">
+                      <center><div id="container2" style="height: 165px" class="col-xl-12"></div></center>       
+                    </div>                
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-12">
+              <div class="card bg-default">
+                <div class="card-header">
+                  <div class="row align-items-center">
+                    <div class="col">
+                      <center><div id="container3" style="height: 164px" class="col-xl-12"></div></center>              
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% include "includes/footer.html" %}
+        
+      </div>
+      <div class="row">
+        <div class="col-xl-6">
+          <div class="card bg-default">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col">
+                  <input type="hidden" id="valores2" value="{{ pr_mes_VelViento }}">
+                  <div id="container4" style="height: 300px" class="col-xl-12 p-0"></div>              
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-6">
+          <div class="card bg-default">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col">
+                  <input type="hidden" id="valores3" value="{{ pr_mes_DirViento }}">
+                  <div id="container5" style="height: 300px" class="col-xl-12 p-0"></div>              
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="card bg-default">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col">
+                  <input type="hidden" id="valores4" value="{{ pr_mes_Lluvia }}">
+                  <input type="hidden" id="valores5" value="{{ pr_mes_Humedad }}">
+                  <div id="container6" style="height: 400px" class="col-xl-12 p-0"></div>              
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-8">
+          <div class="card bg-default">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col">
+                  <input type="hidden" id="valores6" value="{{ pr_mes_RadSolar }}">
+                  <div id="container7" style="height: 400px" class="col-xl-12 p-0"></div>              
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-2">
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="card bg-default">
+                <div class="card-header">
+                  <div class="row align-items-center">
+                    <div class="col">
+                      <center><div id="container8" style="height: 165px" class="col-xl-12 p-0"></div></center>       
+                    </div>                
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-12">
+              <div class="card bg-default">
+                <div class="card-header">
+                  <div class="row align-items-center">
+                    <div class="col">
+                      <center><div id="container9" style="height: 164px" class="col-xl-12 p-0"></div></center>              
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-2">
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="card bg-default">
+                <div class="card-header">
+                  <div class="row align-items-center">
+                    <div class="col">
+                      <center><div id="container10" style="height: 165px" class="col-xl-12 p-0"></div></center>       
+                    </div>                
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-12">
+              <div class="card bg-default">
+                <div class="card-header">
+                  <div class="row align-items-center">
+                    <div class="col">
+                      <center><div id="container11" style="height: 164px" class="col-xl-12 p-0"></div></center>              
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  {% endblock content %}
+
+  <!-- Specific JS goes HERE --> 
+  {% block javascripts %}
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.36/dist/sweetalert2.all.min.js"></script>
+
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/modules/export-data.js"></script>
+  <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      // Temperatura
+      valores = $('#valores').val().split(",");
+      data = []
+      sum = 0
+      elem = 0
+      pmax = 0
+      pmin = 100
+      for(var i=0; i<valores.length-1; i++) { 
+        data.push([valores[i]-0])
+        if(valores[i] != '0') {
+          sum += parseFloat(valores[i])
+          elem += 1
+          if(valores[i] > pmax) {
+            pmax = valores[i]
+          }
+          if(valores[i] < pmin) {
+            pmin = valores[i]
+          }
+        }
+      }
+      prom = sum / elem
+
+      $('#container2').html("<a>Promedio anual de Temperatura</a><br><br><a style='font-size: 60px'>"+prom.toFixed(2)+"</a>")
+      $('#container3').html("<a>Valor máximo mensual</a><br><a style='font-size: 40px'>"+pmax+"</a><br><a>Valor mínimo mensual</a><br><a style='font-size: 40px'>"+pmin+"</a>")
+
+      // Velocidad del viento
+      valores2 = $('#valores2').val().split(",");
+      data2 = []
+      for(var i=0; i<valores2.length-1; i++) { 
+        data2.push([valores2[i]-0])
+      }
+
+      // Dirección del viento
+      valores3 = $('#valores3').val().split(",");
+      data3 = []
+      for(var i=0; i<valores3.length-1; i++) { 
+        data3.push([valores3[i]-0])
+      }
+
+      // Lluvia
+      valores4 = $('#valores4').val().split(",");
+      data4 = []
+      for(var i=0; i<valores4.length-1; i++) { 
+        data4.push([valores4[i]-0])
+      }
+
+      // Humedad
+      valores5 = $('#valores5').val().split(",");
+      data5 = []
+      for(var i=0; i<valores5.length-1; i++) { 
+        data5.push([valores5[i]-0])
+      }
+
+      // RadSolar
+      valores6 = $('#valores6').val().split(",");
+      sum2 = 0
+      elem2 = 0
+      pmax2 = 0
+      pmin2 = 10000
+      vsup = 0
+      vinf = 0
+      data6 = []
+      for(var i=0; i<valores6.length-1; i++) { 
+        data6.push([valores6[i]-0])
+        if(valores6[i] != '0') {
+          sum2 += parseFloat(valores6[i])
+          elem2 += 1
+          if(valores6[i] > pmax2) {
+            pmax2 = valores6[i]
+          }
+          if(valores6[i] < pmin2) {
+            pmin2 = valores6[i]
+          }
+        }
+      }
+      prom2 = sum2 / elem2
+
+      for(var i=0; i<valores6.length-1; i++) {        
+        if(valores6[i] > prom2) {
+          vsup += 1
+        }
+        else {
+          vinf += 1
+        }
+      }
+
+      $('#container8').html("<a>Promedio anual</a><br><br><a style='font-size: 30px'>"+prom2.toFixed(1)+"</a>")
+      $('#container9').html("<a>Valores superiores a la media</a><br><br><a style='font-size: 35px'>"+vsup+"</a>")
+      $('#container10').html("<a>Valor máximo</a><br><a style='font-size: 30px'>"+pmax2+"</a><br><a>Valor mínimo</a><br><a style='font-size: 30px'>"+pmin2+"</a>")
+      $('#container11').html("<a>Valores inferiores a la media</a><br><br><a style='font-size: 35px'>"+vinf+"</a>")
+
+      Highcharts.chart('container', {
+      title: {
+        text: 'Promedios mensuales de Temperatura',
+        align: 'center'
+      },
+      // subtitle: {
+        // text: 'Source: <a href="https://irecusa.org/programs/solar-jobs-census/" target="_blank">IREC</a>',
+        // align: 'left'
+      // },
+      yAxis: {
+        title: {
+          text: 'Temperatura (°C)'
+        }
+      },
+      legend: {
+        enabled: false
+      },
+      xAxis: {
+        // accessibility: {
+        //   rangeDescription: 'Range: 1 to 12'
+        // }
+        categories: [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec'
+        ],
+        crosshair: true,
+      },
+      plotOptions: {
+        series: {
+          label: {
+            connectorAllowed: false
+          },
+          pointStart: 0,
+          tooltip: {
+            headerFormat: '{series.name}: {point.x}<br>',
+            pointFormat: '<b>{point.y} °C</b>'
+          }
+        },
+      },
+      credits: {
+        enabled: false
+      },
+      series: [{
+        name: 'Mes',
+        data: data
+      }],
+      responsive: {
+        rules: [{
+          condition: {
+            maxWidth: 500
+          },
+          chartOptions: {
+            legend: {
+              layout: 'horizontal',
+              align: 'center',
+              verticalAlign: 'bottom',
+            }
+          }
+        }]
+      }
+    });
+
+      // Diagramas de barras      
+      Highcharts.chart('container4', {
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: 'Promedios de Lluvia'
+        },
+        xAxis: {
+            categories: [
+                'Jan',
+                'Feb',
+                'Mar',
+                'Apr',
+                'May',
+                'Jun',
+                'Jul',
+                'Aug',
+                'Sep',
+                'Oct',
+                'Nov',
+                'Dec'
+            ],
+            crosshair: true,
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Lluvia (mm)'
+            }
+        },
+        legend: {
+          enabled: false
+        },
+        tooltip: {
+          headerFormat: '{point.x}<br>',
+          pointFormat: '<b>{point.y} m/s</b>'
+        },
+        plotOptions: {
+          column: {
+              pointPadding: 0.2,
+              borderWidth: 0
+          }
+        },
+        credits: {
+          enabled: false
+        },
+        series: [{
+          name: 'Meses',
+          data: data4
+        }]
+      });
+            
+      Highcharts.chart('container5', {
+      chart: {
+          type: 'bar'
+      },
+      title: {
+          text: 'Promedios de Humedad'
+      },
+      xAxis: {
+          categories: [
+              'Jan',
+              'Feb',
+              'Mar',
+              'Apr',
+              'May',
+              'Jun',
+              'Jul',
+              'Aug',
+              'Sep',
+              'Oct',
+              'Nov',
+              'Dec'
+          ],
+          crosshair: true,
+      },
+      yAxis: {
+          min: 0,
+          title: {
+              text: 'Humedad (%)'
+          }
+      },
+      legend: {
+        enabled: false
+      },
+      tooltip: {
+        headerFormat: '{point.x}<br>',
+        pointFormat: '<b>{point.y}°</b>'
+      },
+      plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+      },
+      credits: {
+        enabled: false
+      },
+      series: [{
+        name: 'Meses',
+        data: data5
+      }]
+    });
+
+      // Diagrama para graficar la humedad y la lluvia
+      Highcharts.chart('container6', {
+      chart: {
+          zoomType: 'xy'
+      },
+      title: {
+          text: 'Promedios mensuales de Velocidad y Dirección del viento',
+          align: 'center'
+      },
+      xAxis: [{
+          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+              'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          crosshair: true
+      }],
+      yAxis: [{ // Primary yAxis
+          labels: {
+              format: '{value} m/2',
+              style: {
+                  color: Highcharts.getOptions().colors[1]
+              }
+          },
+          title: {
+              text: 'Velocidad del viento',
+              style: {
+                  color: Highcharts.getOptions().colors[1]
+              }
+          }
+      }, { // Secondary yAxis
+          title: {
+              text: 'Dirección del viento',
+              style: {
+                  color: Highcharts.getOptions().colors[0]
+              }
+          },
+          labels: {
+              format: '{value} °',
+              style: {
+                  color: Highcharts.getOptions().colors[0]
+              }
+          },
+          opposite: true
+      }],
+      tooltip: {
+          shared: true
+      },
+      credits: {
+        enabled: false
+      },
+      legend: {
+          align: 'left',
+          x: 80,
+          verticalAlign: 'top',
+          y: 80,
+          floating: true,
+          backgroundColor:
+              Highcharts.defaultOptions.legend.backgroundColor || // theme
+              'rgba(255,255,255,0.25)'
+      },
+      series: [{
+          name: 'Velocidad del viento',
+          type: 'column',
+          yAxis: 1,
+          data: data2,
+          tooltip: {
+              valueSuffix: ' m/s'
+          }
+
+      }, {
+          name: 'Dirección del viento',
+          type: 'spline',
+          data: data3,
+          tooltip: {
+            valueSuffix: '°'
+          }
+      }]
+    });
+
+      // Diagrama para graficar la RadSolar
+      Highcharts.chart('container7', {
+      title: {
+        text: 'Promedios mensuales de Radiación Solar',
+        align: 'center'
+      },
+      yAxis: {
+        title: {
+          useHTML: true,
+          text: 'Radiación Solar (W/m<sup>2</sup>)'
+        }
+      },
+      legend: {
+        enabled: false
+      },
+      xAxis: {
+        categories: [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec'
+        ],
+        crosshair: true,
+      },
+      plotOptions: {
+        series: {
+          label: {
+            connectorAllowed: false
+          },
+          pointStart: 0,
+          tooltip: {            
+            headerFormat: '{point.x}<br>',
+            pointFormat: '<b>{point.y} W/m<sup>2</sup></b>'
+          }
+        },
+      },
+      credits: {
+        enabled: false
+      },
+      series: [{
+        name: 'Mes',
+        data: data6
+      }],
+      responsive: {
+        rules: [{
+          condition: {
+            maxWidth: 500
+          },
+          chartOptions: {
+            legend: {
+              layout: 'horizontal',
+              align: 'center',
+              verticalAlign: 'bottom',
+            }
+          }
+        }]
+      }
+    });
+
+  });
+</script>
+
+{% endblock javascripts %}

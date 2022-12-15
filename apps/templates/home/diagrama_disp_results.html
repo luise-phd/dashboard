@@ -1,6 +1,6 @@
 {% extends 'layouts/base.html' %}
 
-{% block title %} Diagrama de dispersión {% endblock title %}
+{% block title %} Diagrama de dispersión de resultados {% endblock title %}
 
 {% block content %}
 
@@ -35,8 +35,8 @@
             <div class="card-header bg-transparent">
               <div class="row align-items-center">
                 <div class="col">
-                  <h5 class="text-light text-uppercase ls-1 mb-1">Diagrama de dispersi&oacute;n</h5>
-				  <span>El diagrama grafica puntos entre los valores reales y los valores estimados de la variable objetivo.</span>
+                  <h5 class="text-light text-uppercase ls-1 mb-1">Diagrama de dispersi&oacute;n de resultados</h5>
+                  <span>El diagrama grafica puntos entre los valores reales y los valores estimados de la variable objetivo.</span>
                 </div>
               </div>
             </div>
@@ -83,7 +83,6 @@
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 
 <script type="text/javascript">
-  //Ocultar y mostrar div_resultados
   $(document).ready(function() {
     res = $('#resultados').val().split("||");
     y_test = res[0].split(";");

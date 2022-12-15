@@ -21,6 +21,7 @@ import pyproj
 import rasterio
 import numpy as np
 import pandas as pd
+import math
 from unipath import Path
 from datetime import datetime
 
@@ -67,6 +68,8 @@ def pages(request):
             context = archivos(request)
         elif load_template == 'predicciones_histo.html':
             context = predicciones_histo(request)
+        elif load_template == 'recursos.html':
+            context = cargar_archivos(request)
         else:
             context['segment'] = load_template
 
@@ -99,7 +102,7 @@ def descargar_csv_rad_solar(request, id):
         cur.execute("SELECT archivo FROM predicciones_histo WHERE idprh = '"+str(id)+"'")
         datos = cur.fetchall()
         # file_path = os.path.join(Path(__file__).parent.parent.parent, r'data\\'+ datos[0][0])
-        file_path = os.path.join(Path(__file__).parent.parent.parent, r'data/'+ nom_arch)
+        file_path = os.path.join(Path(__file__).parent.parent.parent, r'data/'+ datos[0][0])
         print(file_path)
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
@@ -435,14 +438,39 @@ def realizar_prediccion(df, request, nom, year, lat, lon):
         # datos = cur4.fetchall()
 
 
-def ver_diagrama(request, id):
+def diagrama_disp_results(request, id):
     if connection() != None:
         cur = connection().cursor(cursor_factory= psycopg2.extras.DictCursor)
         cur.execute("SELECT var_objetivo, al.algoritmo, res_train, res_test, resultados FROM analisis_histo ah, algoritmos al WHERE idana='"+str(id)+"' AND ah.idalg = al.idalg")
         datos = cur.fetchall()
     
     context = {"datos": datos}
-    return render(request, '../templates/home/ver_diagrama.html', context=context)
+    return render(request, '../templates/home/diagrama_disp_results.html', context=context)
+
+
+def diagrama_rad_solar(request, id):
+    if connection() != None:
+        cur = connection().cursor(cursor_factory= psycopg2.extras.DictCursor)
+        cur.execute("SELECT archivo FROM predicciones_histo WHERE idprh='"+str(id)+"'")
+        datos = cur.fetchall()
+        # print(''.join(datos[0]))
+        df = pd.read_csv('data/'+''.join(datos[0]), sep=';')
+
+        df_mes_RadSolar = df[['mes', 'dia', 'RadSolar']]
+        df_mes_RadSolar = df_mes_RadSolar.groupby(['mes', 'dia'], as_index=False).sum()
+        df_mes_RadSolar = df_mes_RadSolar[['mes', 'RadSolar']]
+        proms_RadSolar = df_mes_RadSolar.groupby(['mes'], as_index=False).mean()
+        pr_mes_RadSolar = ''
+        i=0
+        l_proms_RadSolar = ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
+        for v in proms_RadSolar['RadSolar']:
+            l_proms_RadSolar[math.floor(proms_RadSolar['mes'][i])-1] = str(round(v, 1))
+            i+=1
+        for val in l_proms_RadSolar:
+            pr_mes_RadSolar += val + ","
+    
+    context = {"pr_mes_RadSolar": pr_mes_RadSolar}
+    return render(request, '../templates/home/diagrama_rad_solar.html', context=context)
 
 
 def eliminar_analisis_histo(request, id):
@@ -613,6 +641,141 @@ def analisis_histo(request):
     return context
 
 
+def seleccionar_archivos(request, archivos):
+    a_validos = []
+    for a in archivos:
+        if '.csv' in a[0]:
+            df = pd.read_csv('data/'+request.user.username+'--'+a[0], sep=';')
+        elif '.xls' in a[0] or '.xlsx' in a[0]:
+            df = pd.read_excel('data/'+request.user.username+'--'+a[0], engine='openpyxl')
+        elif '.txt' in a[0]:
+            df = pd.read_csv('data/'+request.user.username+'--'+a[0], delimiter='\t')
+        
+        columns = df.columns
+        if 'mes' in columns and 'Temp' in columns:
+            a_validos.append([str(a[0])])
+
+    return a_validos
+    
+
+def cargar_archivos(request):
+    archivos = list_archivos(request)
+    a_seleccionados = seleccionar_archivos(request, archivos)
+
+    context = {"archivos": a_seleccionados, "segment": 'recursos'}
+    return context
+
+
+def visualizar_dashboard(request):
+    arch_sel = request.POST['arch_sel']
+
+    if '.csv' in arch_sel:
+        df = pd.read_csv('data/'+request.user.username+'--'+arch_sel, sep=';')
+    elif '.xls' in arch_sel or '.xlsx' in arch_sel:
+        df = pd.read_excel('data/'+request.user.username+'--'+arch_sel, engine='openpyxl')
+    elif '.txt' in arch_sel:
+        df = pd.read_csv('data/'+request.user.username+'--'+arch_sel, delimiter='\t')
+
+    band = 0
+    columns = df.columns
+    if 'mes' in columns and 'Temp' in columns:
+        # Promedios mensuales de temperatura
+        df_mes_temp = df[['mes', 'Temp']]
+        proms_temp = df_mes_temp.groupby(['mes'], as_index=False).mean()
+        pr_mes_temp = ''
+        i=0
+        l_proms = ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
+        for v in proms_temp['Temp']:
+            l_proms[math.floor(proms_temp['mes'][i])-1] = str(round(v, 1))
+            i+=1
+        for val in l_proms:
+            pr_mes_temp += val + ","
+        
+        # Promedios mensuales de VelViento
+        df_mes_VelViento = df[['mes', 'VelViento']]
+        proms_VelViento = df_mes_VelViento.groupby(['mes'], as_index=False).mean()
+        pr_mes_VelViento = ''
+        i=0
+        l_proms_VelViento = ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
+        for v in proms_VelViento['VelViento']:
+            l_proms_VelViento[math.floor(proms_VelViento['mes'][i])-1] = str(round(v, 1))
+            i+=1
+        for val in l_proms_VelViento:
+            pr_mes_VelViento += val + ","
+
+        # Promedios mensuales de DirViento
+        df_mes_DirViento = df[['mes', 'DirViento']]
+        proms_DirViento = df_mes_DirViento.groupby(['mes'], as_index=False).mean()
+        pr_mes_DirViento = ''
+        i=0
+        l_proms_DirViento = ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
+        for v in proms_DirViento['DirViento']:
+            l_proms_DirViento[math.floor(proms_DirViento['mes'][i])-1] = str(round(v, 1))
+            i+=1
+        for val in l_proms_DirViento:
+            pr_mes_DirViento += val + ","
+
+        # Promedios mensuales de Lluvia
+        df_mes_Lluvia = df[['mes', 'Lluvia']]
+        proms_Lluvia = df_mes_Lluvia.groupby(['mes'], as_index=False).mean()
+        pr_mes_Lluvia = ''
+        i=0
+        l_proms_Lluvia = ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
+        for v in proms_Lluvia['Lluvia']:
+            l_proms_Lluvia[math.floor(proms_Lluvia['mes'][i])-1] = str(round(v, 1))
+            i+=1
+        for val in l_proms_Lluvia:
+            pr_mes_Lluvia += val + ","
+
+        # Promedios mensuales de humedad
+        df_mes_Humedad = df[['mes', 'Humedad']]
+        proms_Humedad = df_mes_Humedad.groupby(['mes'], as_index=False).mean()
+        pr_mes_Humedad = ''
+        i=0
+        l_proms_Humedad = ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
+        for v in proms_Humedad['Humedad']:
+            l_proms_Humedad[math.floor(proms_Humedad['mes'][i])-1] = str(round(v, 1))
+            i+=1
+        for val in l_proms_Humedad:
+            pr_mes_Humedad += val + ","
+        
+        # Promedios mensuales de RadSolar
+        df_mes_RadSolar = df[['mes', 'dia', 'RadSolar']]
+        df_mes_RadSolar = df_mes_RadSolar.groupby(['mes', 'dia'], as_index=False).sum()
+        df_mes_RadSolar = df_mes_RadSolar[['mes', 'RadSolar']]
+        proms_RadSolar = df_mes_RadSolar.groupby(['mes'], as_index=False).mean()
+        pr_mes_RadSolar = ''
+        i=0
+        l_proms_RadSolar = ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
+        for v in proms_RadSolar['RadSolar']:
+            l_proms_RadSolar[math.floor(proms_RadSolar['mes'][i])-1] = str(round(v, 1))
+            i+=1
+        for val in l_proms_RadSolar:
+            pr_mes_RadSolar += val + ","
+        # print(pr_mes_RadSolar)
+    else:
+        band = -1
+
+    archivos = list_archivos(request)
+    a_seleccionados = seleccionar_archivos(request, archivos)
+
+    context = {
+        "archivos": a_seleccionados,
+        "no_columns": band,
+        "arch_sel": arch_sel,
+        "pr_mes_temp": pr_mes_temp,
+        "pr_mes_VelViento": pr_mes_VelViento,
+        "pr_mes_DirViento": pr_mes_DirViento,
+        "pr_mes_Lluvia": pr_mes_Lluvia,
+        "pr_mes_Humedad": pr_mes_Humedad,
+        "pr_mes_RadSolar": pr_mes_RadSolar
+    }
+    if band == -1:
+        return render(request, '../templates/home/recursos.html', context=context)
+    else:
+        return render(request, '../templates/home/dashboard.html', context=context)
+
+
 def list_archivos(request):
     datos=""
     if connection() != None:
@@ -696,6 +859,16 @@ def descargar_archivo(request, id):
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
             response['Content-Disposition'] = 'inline; filename=' + ''.join(datos[0])
+            return response
+
+
+def descargar_archivo_base(request):
+        # file_path = os.path.join(Path(__file__).parent.parent.parent, r'data\\base\\'+ 'DS-ERA 2012.csv')
+        file_path = os.path.join(Path(__file__).parent.parent.parent, r'data/base/'+ 'DS-ERA 2012.csv')
+        print(file_path)
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + 'DS-ERA 2012.csv'
             return response
 
 
@@ -823,6 +996,7 @@ def connection():
     hostname = 'localhost'
     database = 'doctorado'
     username = 'postgres'
+    # pwd = 'admin'
     pwd = 'postgres'
     port_id = 5432
 

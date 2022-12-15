@@ -1,0 +1,230 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Diagrama de radiación solar {% endblock title %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header bg-primary pb-6">
+      <div class="container-fluid">
+        <div class="header-body">
+          <div class="row align-items-center py-4">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page content -->
+    <div class="container-fluid mt--6">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="card bg-default">
+            <div class="card-header bg-transparent">
+              <div class="row align-items-center">
+                <div class="col">
+                  <h5 class="text-light text-uppercase ls-1 mb-1">Diagrama de radiación solar</h5>
+                  <span>El diagrama grafica datos de la radiación solar estimada.</span>
+                </div>
+              </div>
+            </div>
+          </div>          
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-8">
+          <div class="card bg-default">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col">
+                  <input type="hidden" id="valores6" value="{{ pr_mes_RadSolar }}">
+                  <div id="container7" style="height: 400px" class="col-xl-12 p-0"></div>              
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-2">
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="card bg-default">
+                <div class="card-header">
+                  <div class="row align-items-center">
+                    <div class="col">
+                      <center><div id="container8" style="height: 165px" class="col-xl-12 p-0"></div></center>       
+                    </div>                
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-12">
+              <div class="card bg-default">
+                <div class="card-header">
+                  <div class="row align-items-center">
+                    <div class="col">
+                      <center><div id="container9" style="height: 164px" class="col-xl-12 p-0"></div></center>              
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-2">
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="card bg-default">
+                <div class="card-header">
+                  <div class="row align-items-center">
+                    <div class="col">
+                      <center><div id="container10" style="height: 165px" class="col-xl-12 p-0"></div></center>       
+                    </div>                
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-12">
+              <div class="card bg-default">
+                <div class="card-header">
+                  <div class="row align-items-center">
+                    <div class="col">
+                      <center><div id="container11" style="height: 164px" class="col-xl-12 p-0"></div></center>              
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include "includes/footer.html" %}
+      
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.36/dist/sweetalert2.all.min.js"></script>
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    // RadSolar
+    valores6 = $('#valores6').val().split(",");
+      sum2 = 0
+      elem2 = 0
+      pmax2 = 0
+      pmin2 = 10000
+      vsup = 0
+      vinf = 0
+      data6 = []
+      for(var i=0; i<valores6.length-1; i++) { 
+        data6.push([valores6[i]-0])
+        if(valores6[i] != '0') {
+          sum2 += parseFloat(valores6[i])
+          elem2 += 1
+          if(valores6[i] > pmax2) {
+            pmax2 = valores6[i]
+          }
+          if(valores6[i] < pmin2) {
+            pmin2 = valores6[i]
+          }
+        }
+      }
+      prom2 = sum2 / elem2
+
+      for(var i=0; i<valores6.length-1; i++) {        
+        if(valores6[i] > prom2) {
+          vsup += 1
+        }
+        else {
+          vinf += 1
+        }
+      }
+
+      $('#container8').html("<a>Promedio anual</a><br><br><a style='font-size: 30px'>"+prom2.toFixed(1)+"</a>")
+      $('#container9').html("<a>Valores superiores a la media</a><br><br><a style='font-size: 35px'>"+vsup+"</a>")
+      $('#container10').html("<a>Valor máximo</a><br><a style='font-size: 30px'>"+pmax2+"</a><br><a>Valor mínimo</a><br><a style='font-size: 30px'>"+pmin2+"</a>")
+      $('#container11').html("<a>Valores inferiores a la media</a><br><br><a style='font-size: 35px'>"+vinf+"</a>")
+
+      Highcharts.chart('container7', {
+      title: {
+        text: 'Promedios mensuales de Radiación Solar',
+        align: 'center'
+      },
+      yAxis: {
+        title: {
+          useHTML: true,
+          text: 'Radiación Solar (W/m<sup>2</sup>)'
+        }
+      },
+      legend: {
+        enabled: false
+      },
+      xAxis: {
+        categories: [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec'
+        ],
+        crosshair: true,
+      },
+      plotOptions: {
+        series: {
+          label: {
+            connectorAllowed: false
+          },
+          pointStart: 0,
+          tooltip: {            
+            headerFormat: '{point.x}<br>',
+            pointFormat: '<b>{point.y} W/m<sup>2</sup></b>'
+          }
+        },
+      },
+      credits: {
+        enabled: false
+      },
+      series: [{
+        name: 'Mes',
+        data: data6
+      }],
+      responsive: {
+        rules: [{
+          condition: {
+            maxWidth: 500
+          },
+          chartOptions: {
+            legend: {
+              layout: 'horizontal',
+              align: 'center',
+              verticalAlign: 'bottom',
+            }
+          }
+        }]
+      }
+    });
+
+  });
+</script>
+
+{% endblock javascripts %}

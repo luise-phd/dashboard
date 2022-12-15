@@ -1,0 +1,95 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Recursos {% endblock title %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header bg-primary pb-6">
+      <div class="container-fluid">
+        <div class="header-body">
+          <div class="row align-items-center py-4">
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page content -->
+    <div class="container-fluid mt--6">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="card bg-default">
+            <div class="card-header bg-transparent">
+              <div class="row align-items-center">
+                <div class="col">
+                  <h5 class="text-light text-uppercase ls-1 mb-1">Recursos meteorológicos</h5>
+                  <span>Por favor seleccione un archivo que contenga el mes (mes) de la medición y las siguientes variables meteorológicas: Velocidad del Viento (VelViento), dirección del viento (Dirviento), temperatura (Temp), humedad (Humedad), lluvia (Lluvia).</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card bg-default">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col">
+                  <form id="form" action="/visualizar_dashboard/" method="POST" onsubmit="return validateForm()">
+                    {% csrf_token %}
+                    <h3 class="mb-0">Seleccionar archivo</h3><br>
+                    <select class="form-control" name="arch_sel" id="arch_sel">
+                      <option value=""></option>
+                      {% for fila in archivos %}
+                        {% if fila.0 == arch_sel %}
+                          <option value="{{ fila.0 }}" selected>{{ fila.0 }}</option>
+                        {% else %}
+                          <option value="{{ fila.0 }}">{{ fila.0 }}</option>
+                        {% endif %}
+                      {% endfor %}
+                    </select><br>
+                    <input type="submit" id="btn_vdashboard" class="btn btn-primary col-xl-12" value="Visualizar dashboard">
+                    <input type="hidden" id="no_columns" value="{{ no_columns }}">
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include "includes/footer.html" %}
+      
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.36/dist/sweetalert2.all.min.js"></script>
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<script type="text/javascript">
+  function validateForm() {
+    if($('#arch_sel').val() == "") {
+      Swal.fire({
+          icon: 'info',
+          text: 'Por favor seleccione el archivo',
+        });
+      return false;
+    }
+  }
+
+  $(document).ready(function() {
+    if($('#no_columns').val() == -1) {
+      Swal.fire({
+        icon: 'info',
+        text: 'El archivo no contiene las columnas necesarias para graficar el dashboard',
+      });
+    }
+  });
+</script>
+
+{% endblock javascripts %}

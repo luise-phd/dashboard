@@ -52,8 +52,10 @@
                           <td>{{ fila.2 }}</td>
                           <td>{{ fila.3 }}</td>
                           <td>{{ fila.4 }}</td>
-                          <td>{{ fila.5 }}</td>
                           <td>
+                            <a href="/diagrama_rad_solar/{{ fila.0 }}/" class="a active" title="Visualizar datos de radiación solar">
+                              <i class="fa fa-eye text-blue"></i>
+                            </a>
                             <a href="/abrir_archivo/{{ fila.0 }}/" class="a active" title="Abrir archivo">
                               <i class="fa fa-folder-open text-blue"></i>
                             </a>
@@ -64,6 +66,7 @@
                               <i class="fa fa-trash text-red"></i>
                             </a>
                           </td>
+                          <td>{{ fila.5 }}</td>
                         </tr>
                       {% endfor %}
                     </tbody>
