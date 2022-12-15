@@ -23,11 +23,16 @@ Nuevo:
 07/12/2022: Validación de archivos sin contenido o con contenido no numérico
 08/12/2022: Programación multi-hilo en el procesamiento de imágenes para la predicción de radiación solar
 08/12/2022: Verificación de las coordenadas fuera de la matríz de la imágen
+13/12/2022: Construcción de la entrada de datos para el Dashboard
+14/12/2022: Adición de gráficas de líneas, columnas, barras y combinación de dos variables en una gráfica de líneas  
+15/12/2022: Adición de archivo de ejemplo en cargar datos
+15/12/2022: Adición de acción para visualizar un gráfico de líneas con la radiación solar estimada
 
 Pendiente:
 * Mapas de calor para visualizar la correlación
 * Algoritmos PySpark
 * Ajuste de hiperparametros por busqueda aleatoria: RandomizedSearchCV
+* Recordar contraseña
 
 Gestión de errores:
 * ImportError: Missing optional dependency 'openpyxl'.  Use pip or conda to install openpyxl.
